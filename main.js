@@ -21,11 +21,8 @@ function addNewBook(){
     const titleBook = document.getElementById('inputBookTitle').value;
     const author = document.getElementById('inputBookAuthor').value;
     const year = document.getElementById('inputBookYear').value;
-    const isBookCompleted = document.getElementById('inputBookIsComplete').value
-    isBookCompleted.addEventListener('click',function(){
-        isBookCompleted.value = true; //menambahkan fungsi yang bertugas memindahkan buku ke rak "yang suda dibaca"
-        //fungsi ini juga akan mengembalikan boolean jika diklik--> true, jika tidak di klik-->false
-    })
+    const isBookCompleted = document.getElementById('inputBookIsComplete').checked;
+    console.log(isBookCompleted);
     
     //console.log(titleBook,author,year);
     const generateID = generateId() // ini fungsi untuk membuat ID
@@ -57,7 +54,7 @@ document.addEventListener(RENDER_EVENT,function(){
     
     for(const bookItem of books){
         const bookElement = makeBook(bookItem); //fungsi membuat buku
-        if(!bookElement.isBookCompleted){
+        if(bookElement.isBookCompleted===false){
             uncompletedBookList.append(bookElement);
         }else{
             completedBookList.append(bookElement);
@@ -70,7 +67,7 @@ function makeBook(bookObject){
     textTitle.innerText=bookObject.titleBook;
 
     const textAuthor = document.createElement('p');
-    textAuthor.innerText=bookObject.author;
+    textAuthor.innerText=`Penulis: ${bookObject.author}`;
 
     const container = document.createElement('article');
     container.classList.add('book_item');
@@ -82,6 +79,10 @@ function makeBook(bookObject){
     buttonContainer.classList.add('action');
 
     if(bookObject.isBookCompleted){
+        const stillRead = document.createElement('button');
+        stillRead.classList.add('green');
+        stillRead.innerHTML='Belum Selesai di Baca';
+
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('red');
         deleteButton.innerHTML='Hapus Buku';
@@ -89,16 +90,20 @@ function makeBook(bookObject){
         deleteButton.addEventListener('click', function(){
             //removeTaskFromCompleted(bookObject.idBook) //buat fungsi
         })
-        buttonContainer.append(deleteButton);
+        buttonContainer.append(stillRead,deleteButton);
     } else{
         const checkButton = document.createElement('button');
         checkButton.classList.add('green');
-        checkButton.innerHTML='Selesai di Baca'
+        checkButton.innerHTML='Selesai di Baca';
+
+        const deleteButton2 = document.createElement('button');
+        deleteButton2.classList.add('red');
+        deleteButton2.innerHTML='Hapus buku';
 
         checkButton.addEventListener('click', function(){
             //addBookToCompleted(bookObject.idBook);
         })
-        buttonContainer.append(checkButton)
+        buttonContainer.append(checkButton,deleteButton2);
     }
 
     container.append(buttonContainer);
