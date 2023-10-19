@@ -54,9 +54,11 @@ document.addEventListener(RENDER_EVENT,function(){
     
     for(const bookItem of books){
         const bookElement = makeBook(bookItem); //fungsi membuat buku
-        if(bookElement.isBookCompleted===false){
+        console.log(`ini adalah bookitem--> ${bookItem.isBookCompleted}`);
+        console.log(bookElement);
+        if(!bookItem.isBookCompleted){
             uncompletedBookList.append(bookElement);
-        }else{
+        }else{        
             completedBookList.append(bookElement);
         }
     }
