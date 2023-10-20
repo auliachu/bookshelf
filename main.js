@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded',function(){
     if(isStorageExist()){
         loadDataFromStorage();
     }
+
+    //searchBook
+    const formSearchBook = document.getElementById('searchBook')
+    console.log(formSearchBook);
+    formSearchBook.addEventListener('submit',function(e){
+        getBookFromSearchButton();
+        e.preventDefault();
+    })
 })
 
 const books = []; //array yang menampung banyaknya object buku
@@ -65,6 +73,8 @@ document.addEventListener(RENDER_EVENT,function(){
             completedBookList.append(bookElement);
         }
     }
+
+    //nambahkan kondisi searchbar
 })
 
 function makeBook(bookObject){
@@ -209,3 +219,26 @@ function saveData(){
 document.addEventListener(SAVED_EVENT, function(){
     console.log(localStorage.getItem(STORAGE_KEY))
 })
+
+//Search bar
+function getBookFromSearchButton(e){
+    const keyword = document.getElementById('searchBookTitle').value;
+    //console.log('ini adalah buku yang dicari--> '+keyword);
+    //updateResults(showBook);
+    //getFromLocalStorage();
+}
+
+function getFromLocalStorage(){
+    const bookStorage = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    console.log('ini adalah array buku yang tersimpan di local storage--> ');
+    console.log(bookStorage); //bookStorage.idBook
+    return bookStorage;
+}
+
+function updateResults(keyword){
+    const bookTitle = getFromLocalStorage();
+    if (keyword.trim()==='') return; //mengabaikan space berlebih di searchbar
+
+    const titleMatch = bookTitle.titleBook.filter(item => item.toLowerCase().includes(keyword.toLowerCase()));
+    return titleMatch;
+}
