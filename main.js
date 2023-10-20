@@ -239,9 +239,10 @@ function updateResults(keyword){
 
     const filteredBooks = bookTitle.filter(item => {
         const titleMatch = item.titleBook.toLowerCase().includes(keyword);
+        const authorMatch = item.author.toLowerCase().includes(keyword);
         console.log('ini isi dari filtered match--> ')
         console.log(titleMatch);
-        return titleMatch;
+        return titleMatch || authorMatch;
     });
 
     console.log('ini adalah isi dari filtered books-> ')
