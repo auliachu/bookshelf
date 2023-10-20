@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded',function(){
         addNewBook();
         event.preventDefault();
     })
+    if(isStorageExist()){
+        loadDataFromStorage();
+    }
 })
 
 const books = []; //array yang menampung banyaknya object buku
@@ -30,7 +33,7 @@ function addNewBook(){
     books.push(bookObject); //masukkan masing-masing object ke dalam array
     
     document.dispatchEvent(new Event(RENDER_EVENT));
-    //saveData();/
+    saveData();
 }
 
 function generateBookObject(idBook,titleBook,author,year,isBookCompleted){
@@ -89,8 +92,12 @@ function makeBook(bookObject){
         deleteButton.classList.add('red');
         deleteButton.innerHTML='Hapus Buku';
 
+        stillRead.addEventListener('click',function(){
+            undoBookFromCompleted(bookObject.idBook)
+        })
+
         deleteButton.addEventListener('click', function(){
-            //removeTaskFromCompleted(bookObject.idBook) //buat fungsi
+            removeBookFromCompleted(bookObject.idBook) //buat fungsi
         })
         buttonContainer.append(stillRead,deleteButton);
     } else{
@@ -102,8 +109,12 @@ function makeBook(bookObject){
         deleteButton2.classList.add('red');
         deleteButton2.innerHTML='Hapus buku';
 
+        deleteButton2.addEventListener('click', function(){
+            removeBookFromCompleted(bookObject.idBook);
+        })
+
         checkButton.addEventListener('click', function(){
-            //addBookToCompleted(bookObject.idBook);
+            addBookToCompleted(bookObject.idBook);
         })
         buttonContainer.append(checkButton,deleteButton2);
     }
@@ -112,3 +123,89 @@ function makeBook(bookObject){
     return container;
 }
 
+function findIndexBook(todoId){
+    for(const index in books){
+        if(books[index].idBook===todoId){
+            console.log(index); //mengeluarkan index/urutan buku
+            return index;
+        }
+    }
+    return -2;
+}
+
+function findBook(todoId){
+    for(const bookItem of books){
+        if(bookItem.idBook==todoId){
+            return bookItem;
+        }
+    } //findTodo, yang mana berfungsi untuk mencari todo dengan ID yang sesuai pada array todos.
+    return null;
+}
+
+function addBookToCompleted(todoId){
+    const bookTarget = findBook(todoId);
+
+    if(bookTarget===null){
+        return
+    }
+    bookTarget.isBookCompleted=true;
+    document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData();
+}
+
+function removeBookFromCompleted(todoId){
+    const bookTarget = findIndexBook(todoId);
+    if(bookTarget===-2) return
+    books.splice(bookTarget,1);
+    document.dispatchEvent(new Event(RENDER_EVENT));
+    console.log('Buku sudah dihapus');
+    saveData();
+}
+
+function undoBookFromCompleted(todoId){
+    const bookTarget = findBook(todoId)
+
+    if(bookTarget===null)return 
+    bookTarget.isBookCompleted=false;
+    document.dispatchEvent(new Event(RENDER_EVENT));
+    console.log('Buku sudah di pindahkan ke belum selesai dibaca');
+    saveData();
+}
+
+//ini membuat penyimpanan
+
+const STORAGE_KEY = 'BOOKSHELF_APPS';
+const SAVED_EVENT = 'save-book';
+
+function isStorageExist(){
+    if(typeof(Storage)=== undefined){
+        alert('Your browser is incompatible');
+        return false;
+    }
+    return true;
+}
+
+function loadDataFromStorage(){
+    const serializedData = localStorage.getItem(STORAGE_KEY);
+    let data = JSON.parse(serializedData);
+    console.log('ini adalah json parse -> '+data);
+    if(data !== null){
+        for(const book of data){
+            books.push(book);
+        }
+    }
+    document.dispatchEvent(new Event(RENDER_EVENT));
+}
+
+function saveData(){
+    if(isStorageExist()){
+        const parsed = JSON.stringify(books); //konversi data object ke string agar bs disimpan di local
+        console.log('ini adalah object yang diubah ke string -> '+parsed);
+        localStorage.setItem(STORAGE_KEY, parsed);
+        document.dispatchEvent(new Event(SAVED_EVENT));
+    }
+}
+
+document.addEventListener(SAVED_EVENT, function(){
+    console.log(localStorage.getItem(STORAGE_KEY))
+})
