@@ -223,8 +223,8 @@ document.addEventListener(SAVED_EVENT, function(){
 //Search bar
 function getBookFromSearchButton(e){
     const keyword = document.getElementById('searchBookTitle').value;
-    //console.log('ini adalah buku yang dicari--> '+keyword);
-    //updateResults(showBook);
+    console.log('ini adalah buku yang dicari--> '+keyword);
+    updateResults(keyword);
     //getFromLocalStorage();
 }
 
@@ -239,6 +239,14 @@ function updateResults(keyword){
     const bookTitle = getFromLocalStorage();
     if (keyword.trim()==='') return; //mengabaikan space berlebih di searchbar
 
-    const titleMatch = bookTitle.titleBook.filter(item => item.toLowerCase().includes(keyword.toLowerCase()));
-    return titleMatch;
+    const filteredBooks = bookTitle.filter(item => {
+        const titleMatch = item.titleBook.toLowerCase().includes(keyword);
+        console.log('ini isi dari filtered match--> ')
+        console.log(titleMatch);
+        return titleMatch;
+    });
+
+    console.log('ini adalah isi dari filtered books-> ')
+    console.log(filteredBooks);
+    return filteredBooks;
 }
