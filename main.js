@@ -75,6 +75,14 @@ document.addEventListener(RENDER_EVENT,function(){
     }
 
     //nambahkan kondisi searchbar
+    // for (const bookSearchBar of bookToShow){
+    //     const bookSearchBarElement = makeBook(bookSearchBar);
+    //     if(!bookSearchBar.isBookCompleted){
+    //         uncompletedBookList.append(bookSearchBarElement);
+    //     }else{
+    //         completedBookList.append(bookSearchBarElement);
+    //     }
+    // }
 })
 
 function makeBook(bookObject){
@@ -248,5 +256,25 @@ function updateResults(keyword){
 
     console.log('ini adalah isi dari filtered books-> ')
     console.log(filteredBooks);
-    return filteredBooks;
+
+    if(filteredBooks.length==0){
+        const uncompletedBookList = document.getElementById('incompleteBookshelfList');
+        uncompletedBookList.innerHTML='';
+    
+        const completedBookList = document.getElementById('completeBookshelfList');
+        completedBookList.innerHTML='';
+    }else{
+        filteredBooks.forEach(bookToShow=>{
+            const bookToShowFromSearchBar = makeBook(bookToShow);
+            console.log('ini adalah')
+            if(!bookToShow.isBookCompleted){
+                uncompletedBookList.append(bookToShowFromSearchBar);
+            }else{        
+                completedBookList.append(bookToShowFromSearchBar);
+            }            
+        })
+    }
+
 }
+
+
